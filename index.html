@@ -668,6 +668,56 @@
             color: var(--error);
         }
 
+        /* Upgrade ideas */
+        .idea-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .idea-card {
+            padding: 1rem;
+            border: 1px solid var(--border-default);
+            border-radius: 8px;
+            background: var(--bg-tertiary);
+        }
+
+        .idea-card h3 {
+            margin-bottom: 0.35rem;
+            font-size: 1rem;
+            color: var(--text-primary);
+        }
+
+        .idea-meta {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 0.5rem;
+        }
+
+        .idea-tag {
+            padding: 0.125rem 0.5rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background: var(--bg-elevated);
+            color: var(--text-muted);
+            border: 1px solid var(--border-default);
+        }
+
+        .idea-card p {
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin-bottom: 0.5rem;
+        }
+
+        .idea-impact {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
         /* Loading Indicator */
         .loading {
             display: inline-block;
@@ -859,6 +909,10 @@
                     <div class="nav-item" onclick="showApiKeyModal()">
                         <i class="fas fa-key"></i>
                         <span>Set API Key</span>
+                    </div>
+                    <div class="nav-item" onclick="showRoadmapModal()">
+                        <i class="fas fa-lightbulb"></i>
+                        <span>Upgrade Ideas</span>
                     </div>
                 </div>
                 <div class="nav-section">
@@ -1067,6 +1121,32 @@
         let projects = [];
         let snippets = [];
         let autoRunEnabled = true;
+        const upgradeIdeas = [
+            {
+                title: 'Real-time Collaboration',
+                desc: 'Enable multi-user sessions with live cursors, shared terminals, and chat to collaborate on code in real-time.',
+                tags: ['Collab', 'Realtime'],
+                impact: 'High impact · Medium effort'
+            },
+            {
+                title: 'AI-Powered Code Reviews',
+                desc: 'Automatically review saved projects for potential bugs, accessibility issues, or performance bottlenecks using structured AI prompts.',
+                tags: ['AI', 'Quality'],
+                impact: 'Medium impact · Medium effort'
+            },
+            {
+                title: 'Snippet Library with Sync',
+                desc: 'Convert the Snippets modal into a searchable library with cloud sync, tagging, and drag-to-editor insertion.',
+                tags: ['Productivity'],
+                impact: 'Medium impact · Low effort'
+            },
+            {
+                title: 'Deploy to Static Hosts',
+                desc: 'Add one-click deploys to Netlify, Vercel, or GitHub Pages with build previews and environment config.',
+                tags: ['DevOps', 'Deploy'],
+                impact: 'High impact · High effort'
+            }
+        ];
 
         // IMPROVEMENT: Gemini AI State
         let geminiApiKey = null;
@@ -1102,6 +1182,7 @@
         window.showApiKeyModal = showApiKeyModal;
         window.saveApiKey = saveApiKey;
         window.showConfirmDialog = showConfirmDialog; // BUGFIX: Make it global
+        window.showRoadmapModal = showRoadmapModal;
 
         // Initialize App
         function init() {
@@ -1753,6 +1834,44 @@
                             <i class="fas fa-bookmark"></i>
                             <p>Snippet feature coming soon!</p>
                             <p style="font-size: 0.875rem; color: var(--text-muted);">Save reusable code snippets for quick access</p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" onclick="this.closest('.modal-overlay').remove()">Close</button>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(overlay);
+        }
+
+        function showRoadmapModal() {
+            const overlay = document.createElement('div');
+            overlay.className = 'modal-overlay';
+            overlay.onclick = (e) => {
+                if (e.target === overlay) overlay.remove();
+            };
+
+            const ideaCards = upgradeIdeas.map(idea => `
+                <div class="idea-card">
+                    <h3>${idea.title}</h3>
+                    <div class="idea-meta">
+                        ${idea.tags.map(tag => `<span class="idea-tag">${tag}</span>`).join('')}
+                    </div>
+                    <p>${idea.desc}</p>
+                    <div class="idea-impact">${idea.impact}</div>
+                </div>
+            `).join('');
+
+            overlay.innerHTML = `
+                <div class="modal">
+                    <div class="modal-header">
+                        <h2 class="modal-title">Upgrade Ideas & Roadmap</h2>
+                    </div>
+                    <div class="modal-body">
+                        <p style="margin-bottom: 1rem; color: var(--text-secondary);">Here are some high-impact upgrades you can explore next:</p>
+                        <div class="idea-list">
+                            ${ideaCards}
                         </div>
                     </div>
                     <div class="modal-footer">
